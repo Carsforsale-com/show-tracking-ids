@@ -60,8 +60,8 @@
         </footer>
 
         <script>
-            var scriptToAdd = window.location.href + 'bookmarklet.js';
-            var addScript = 'javascript:(function%20(e){var%20t=document.createElement("script");t.setAttribute("src",e),t.setAttribute("crossorigin","anonymous"),document.body.appendChild(t)}("' + scriptToAdd + '"));'
+            const scriptToAdd = `${window.location.href}bookmarklet.js`;
+            const addScript = `javascript:(function%20(e){var%20t=document.createElement("script");t.setAttribute("src",e),t.setAttribute("crossorigin","anonymous"),document.body.appendChild(t)}("${scriptToAdd}"));`;
             document.querySelector('[data-bookmarklet]').href = addScript;
         </script>
     </body>

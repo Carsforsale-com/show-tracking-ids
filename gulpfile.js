@@ -1,30 +1,26 @@
-'use strict';
+const { series, parallel, src, dest } = require('gulp');
+const del = require('del');
+const gulpConcat = require('gulp-concat');
+const minify = require('gulp-babel-minify');
 
-var del = require('del'),
-  gulp = require('gulp'),
-  gulpConcat = require('gulp-concat'),
-  gulpJshint = require('gulp-jshint'),
-  minify = require('gulp-babel-minify'),
-  jshintStylish = require('jshint-stylish');
+const sourceFolder = 'app';
+const destFolder = 'dist';
 
-gulp.task('scripts', ['clean'], function () {
-  return gulp.src('app/{,*/}*.js')
-    .pipe(gulpJshint())
-    .pipe(gulpJshint.reporter(jshintStylish))
-    .pipe(minify())
-    .pipe(gulpConcat('bookmarklet.js'))
-    .pipe(gulp.dest('dist'));
-});
+function clean(cb) {
+  del.bind(null, destFolder);
 
-gulp.task('htmls', ['clean'], function () {
-  return gulp.src('app/*.html')
-    .pipe(gulp.dest('dist'))
-});
+  cb();
+}
 
-gulp.task('clean', del.bind(null, 'dist'));
+function htmls(cb) {
+  return src(`${sourceFolder}/*.html`).pipe(dest(destFolder));
+}
 
-gulp.task('default', ['clean', 'scripts', 'htmls']);
+function scripts(cb) {
+  return src(`${sourceFolder}/{,*/}*.js`)
+      .pipe(minify())
+      .pipe(gulpConcat('bookmarklet.js'))
+      .pipe(dest(destFolder));
+}
 
-gulp.task('watch', function () {
-  gulp.watch('app/{,*/}*.js', ['scripts']);
-});
+exports.default = series(clean, parallel(scripts, htmls));
